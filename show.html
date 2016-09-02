@@ -1,0 +1,41 @@
+<html>
+    <head>
+    <style>
+        div {padding: 5px 10px; margin-bottom: 2px;}
+        div span {display: block; float: right; width: 30px; border-left: 2px solid black; text-align: right;}
+        .fatal {background-color: #ff0000;}
+        .warning {background-color: #ffaa44;}
+        .notice {background-color: #ffff88;}
+        .deprecated {background-color: #dddddd;}
+    </style>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script type="text/javascript">
+    $(function() {
+        function refresh()
+        {
+            $.getJSON('phpErrorLogJson.php', function(data) {
+                $('body').html('');
+                $.each(data.fatals, function (key, item) {
+                    $('body').append('<div class="fatal"><span>'+item.count+'</span> '+item.content+'</div>');
+                });
+                $.each(data.warnings, function (key, item) {
+                    $('body').append('<div class="warning"><span>'+item.count+'</span> '+item.content+'</div>');
+                });
+                $.each(data.notices, function (key, item) {
+                    $('body').append('<div class="notice"><span>'+item.count+'</span> '+item.content+'</div>');
+                });
+                $.each(data.deprecateds, function (key, item) {
+                    $('body').append('<div class="deprecated"><span>'+item.count+'</span> '+item.content+'</div>');
+                });
+            });
+        }
+       
+        setInterval(refresh, 5000);
+        refresh();
+    });
+
+    </script>
+    </head>
+    <body>
+    </body>
+</html>
