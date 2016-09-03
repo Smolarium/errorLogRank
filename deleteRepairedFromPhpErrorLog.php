@@ -10,11 +10,23 @@ if (isset($iniConf['REDIS_DATABASE_INDEX'])) {
     $redis->select($iniConf['REDIS_DATABASE_INDEX']);
 }
 
-if (
-    $_POST['type'] == $iniConf['REDIS_KEY_PARSED_FATAL']
-    || $_POST['type'] == $iniConf['REDIS_KEY_PARSED_WARNING']
-    || $_POST['type'] == $iniConf['REDIS_KEY_PARSED_NOTICE']
-    || $_POST['type'] == $iniConf['REDIS_KEY_PARSED_DEPRECATED']
-) {
-    $redis->zRem($_POST['type'], $_POST['key']);
+$id = $_POST['id'];
+$type = null;
+switch (substr($id, 0, 1)) {
+    case 'f': $type = $iniConf['REDIS_KEY_PARSED_FATAL'];
+        break;
+    case 'w': $type = $iniConf['REDIS_KEY_PARSED_WARNING'];
+        break;
+    case 'n': $type = $iniConf['REDIS_KEY_PARSED_NOTICE'];
+        break;
+    case 'd': $type = $iniConf['REDIS_KEY_PARSED_DEPRECATED'];
+        break;
+}
+
+$hash = substr($id, 2);
+foreach ($redis->zRevRange($type, 0, -1, false) as $row) {
+    if ($hash === hash('sha256', $row)) {
+        $redis->zRem($type, $row);
+        break;
+    }
 }

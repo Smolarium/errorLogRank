@@ -3,6 +3,7 @@
     <style>
         div {padding: 5px 10px; margin-bottom: 2px;}
         div span {display: block; float: right; width: 30px; border-left: 2px solid black; text-align: right;}
+        div button {float: right;margin-left: 10px;}
         .fatal {background-color: #ff0000;}
         .warning {background-color: #ffaa44;}
         .notice {background-color: #ffff88;}
@@ -16,16 +17,24 @@
             $.getJSON('phpErrorLogJson.php', function(data) {
                 $('body').html('');
                 $.each(data.fatals, function (key, item) {
-                    $('body').append('<div class="fatal"><span>'+item.count+'</span> '+item.content+'</div>');
+                    $('body').append('<div class="fatal"><button data-id="' + item.id + '">DEL</button><span>'+item.count+'</span> '+item.content+'</div>');
                 });
                 $.each(data.warnings, function (key, item) {
-                    $('body').append('<div class="warning"><span>'+item.count+'</span> '+item.content+'</div>');
+                    $('body').append('<div class="warning"><button data-id="' + item.id + '">DEL</button><span>'+item.count+'</span> '+item.content+'</div>');
                 });
                 $.each(data.notices, function (key, item) {
-                    $('body').append('<div class="notice"><span>'+item.count+'</span> '+item.content+'</div>');
+                    $('body').append('<div class="notice"><button data-id="' + item.id + '">DEL</button><span>'+item.count+'</span> '+item.content+'</div>');
                 });
                 $.each(data.deprecateds, function (key, item) {
-                    $('body').append('<div class="deprecated"><span>'+item.count+'</span> '+item.content+'</div>');
+                    $('body').append('<div class="deprecated"><button data-id="' + item.id + '">DEL</button><span>'+item.count+'</span> '+item.content+'</div>');
+                });
+
+                $('button').click(function() {
+                    if (confirm('Sure?')) {
+                        $.post('deleteRepairedFromPhpErrorLog.php', {id: $(this).data('id')}, function() {
+                            refresh();
+                        });
+                    }
                 });
             });
         }

@@ -24,7 +24,7 @@ $deprecateds = $redis->zRevRange(
 $res = ['fatals' => [], 'warnings' => [], 'notices' => [], 'deprecateds' => []];
 foreach ($fatals as $text => $count) {
     $res['fatals'][] = [
-        'id' => hash('sha256', $text),
+        'id' => 'f-' . hash('sha256', $text),
         'content' => $text,
         'count' => $count
     ];
@@ -32,7 +32,7 @@ foreach ($fatals as $text => $count) {
 
 foreach ($warnings as $text => $count) {
     $res['warnings'][] = [
-        'id' => hash('sha256', $text),
+        'id' => 'w-' . hash('sha256', $text),
         'content' => $text,
         'count' => $count
     ];
@@ -40,7 +40,7 @@ foreach ($warnings as $text => $count) {
 
 foreach ($notices as $text => $count) {
     $res['notices'][] = [
-        'id' => hash('sha256', $text),
+        'id' => 'n-' . hash('sha256', $text),
         'content' => $text,
         'count' => $count
     ];
@@ -48,7 +48,7 @@ foreach ($notices as $text => $count) {
 
 foreach ($deprecateds as $text => $count) {
     $res['deprecateds'][] = [
-        'id' => hash('sha256', $text),
+        'id' => 'd-' . hash('sha256', $text),
         'content' => $text,
         'count' => $count
     ];
